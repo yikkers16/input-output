@@ -6,6 +6,123 @@
     <title>Document</title>
 </head>
 <body>
-    GOOOD MORNING
+	<h1>Weaving Draft Converter</h1>
+
+	<div>
+		Draft Units:
+        <input type="text" id="input-1">
+		<button onclick="addToArray();">
+			Add draft unit
+		</button>
+
+        <button onclick="removeLastElement();">
+			Remove previous draft unit entry
+		</button>
+
+        <button onclick="emptyArray();">
+            Reset
+        </button>        
+	</div>
+	
+    <h1>Sequence of Draft Units</h1>
+	<div id="output"></div>
+
+	<br>
+
+	<div>
+        Threading Group Size:
+		<input type="text" id="input-2"> ends	
+	</div>
+    
+	<br>
+
+	<div>
+        Ends per inch (epi):
+		<input type="number" id="input-3"> 
+	</div>
+
+	<br>
+
+	<div>
+		Length of warp:
+        <input type="text" id="input-4"> yards
+	</div>
+
+    <br>
+
+    <button onclick="actualMaterial();">
+        Calculate
+    </button>
+
+	<br>	
+
+	<h1>Actual Width of Cloth</h1>
+      
+    Total Width of Cloth: <div id="output-2"></div>
+
+    <br>
+    <br>
+
+    Amount of material: <div id="output-1"></div> 
+
+	<script>
+		//Based code edited from from Week 4 Constructing Data, Playing with arrays
+		let output = document.querySelector('#output');
+		let outputOne = document.querySelector('#output-1');
+		let outputTwo = document.querySelector('#output-2');
+
+		let myData = [];
+
+		//Vertically consolidate the manual calculation from a profile draft
+		function addToArray() {
+			let newData = document.querySelector('#input-1').value;
+			myData.push(newData);
+			showArrayContents();
+		}
+
+		// Removes the previous element if erroneous 
+		function removeLastElement() {
+			myData.pop();
+			showArrayContents();
+		}	
+
+		// Clears the list 
+		function emptyArray() {
+			myData = [];
+			showArrayContents();
+		}
+
+		// A helper function to show the contents of our array
+		function showArrayContents() {
+			output.innerHTML = []; // clear contents first
+
+			// Go through array and add contents
+			for (let element of myData) {
+				output.innerHTML += element + "<br>";
+			}
+		}
+
+		function actualMaterial() {
+			const materialSum = myData.map(Number) // Convert all string elements in array generated into numbers (Code taken from Stack Overflow)
+        	.reduce((partialSum, a) => partialSum + a, 0); // Sums all integer elements (Code taken from Stack Overflow)
+			const warpLength = document.querySelector('#input-4').value //Extracting value from input 
+			const threadingGroup = document.querySelector('#input-2').value //Extracting value from input 
+			const ePi = document.querySelector('#input-3').value //Extracting value from input 
+    		
+			//Calculating Total Width of Cloth
+			if (Math.ceil((materialSum*threadingGroup)/ePi) > 37) {
+				outputTwo.innerHTML = Math.ceil((materialSum*threadingGroup)/ePi) + `"` + "<br>" + "CLOTH TOO WIDE" + "<br>" + "Please adjust EPI, or select a different weave structure";
+			}
+			else {
+				outputTwo.innerHTML = Math.ceil((materialSum*threadingGroup)/ePi) + `"`;
+			}
+			//Calculating Amount of Material
+			outputOne.innerHTML = Math.ceil((materialSum*threadingGroup*warpLength)/2224) + " cone(s) of yarn";
+		}
+		
+		showArrayContents();
+        
+    </script>        
+
 </body>
 </html>
